@@ -16,6 +16,8 @@ import { CategoryForm } from "./_components/category-form";
 import { PriceForm } from "./_components/price-form";
 import { AttachmentForm } from "./_components/attachment-form";
 import { ChaptersForm } from "./_components/chapters-form";
+import { Banner } from "@/components/banner";
+import { CourseActions } from "./_components/course-actions";
 
 export default async function CoursePage({
   params,
@@ -57,7 +59,15 @@ export default async function CoursePage({
 
   const completionText = `${completedFields}/${totalFields} `;
 
+  const isComplete = requiredFields.every(Boolean);
+
   return (
+    <>
+    {!course.isPublished && (
+      <Banner
+        label="This course is unpublished. It will not be visible to the students."
+      />
+    )}
     <div className="p-6">
       <div className="flex items-center justify-between ">
         <div className="flex flex-col gap-y-2">
@@ -66,6 +76,11 @@ export default async function CoursePage({
             Complete all fields {completionText}
           </span>
         </div>
+        <CourseActions
+          disabled={!isComplete}
+          courseId={course.id}
+          isPublished={course.isPublished}
+         />
       </div>
       <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
@@ -110,5 +125,6 @@ export default async function CoursePage({
         </div>
       </div>
     </div>
+    </>
   );
 }
