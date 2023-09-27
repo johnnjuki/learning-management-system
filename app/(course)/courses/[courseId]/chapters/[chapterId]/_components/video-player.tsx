@@ -9,9 +9,8 @@ import { Loader2, Lock } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { useConfettiStore } from "@/hooks/use-confetti-store";
-import { title } from "process";
 
-interface videoPlayerProps {
+interface VideoPlayerProps {
   playbackId: string;
   courseId: string;
   chapterId: string;
@@ -28,7 +27,8 @@ export const VideoPlayer = ({
   nextChapterId,
   isLocked,
   completeOnEnd,
-}: videoPlayerProps) => {
+  title,
+}: VideoPlayerProps) => {
   const [isReady, setIsReady] = useState(false);
   const router = useRouter();
   const confetti = useConfettiStore();
@@ -38,28 +38,30 @@ export const VideoPlayer = ({
       if (completeOnEnd) {
         await axios.put(
           `/api/courses/${courseId}/chapters/${chapterId}/progress`,
-          { isCompleted: true },
+          {
+            isCompleted: true,
+          },
         );
 
         if (!nextChapterId) {
           confetti.onOpen();
         }
 
+        toast.success("Progress updated");
+        router.refresh();
+
         if (nextChapterId) {
           router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
         }
-
-        toast.success("Progress updated.");
-        router.refresh();
       }
-    } catch (error) {
-      toast.error("Something went wrong")
+    } catch {
+      toast.error("Something went wrong");
     }
-  }
+  };
 
   return (
     <div className="relative aspect-video">
-      {!isLocked && (
+      {!isReady && !isLocked && (
         <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
           <Loader2 className="h-8 w-8 animate-spin text-secondary" />
         </div>

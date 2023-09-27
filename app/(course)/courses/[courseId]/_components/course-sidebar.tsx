@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
 import { CourseSidebarItem } from "./course-sidebar-item";
+import { CourseProgress } from "@/components/course-progress";
 
 interface CourseSidebarProps {
   course: Course & {
